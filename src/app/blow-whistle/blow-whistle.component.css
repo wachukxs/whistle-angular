@@ -1,3 +1,16 @@
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+form {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+    gap: 15px;
+}
+  
 /*
     Source: https://www.w3schools.com/css/css_rwd_mediaqueries.asp
     Place media queries after other queries

@@ -13,9 +13,11 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 })
 export class BlowWhistleComponent implements OnInit {
 
+  selectable = true;
+  removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  fruitCtrl = new FormControl('');
-  filteredFruits: Observable<string[]>
+  fruitCtrl = new FormControl();
+  filteredFruits: Observable<string[]>;
   fruits: string[] = ['Lemon'];
   allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
 
@@ -24,8 +26,7 @@ export class BlowWhistleComponent implements OnInit {
   constructor() {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
-      map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allFruits.slice())),
-    );
+      map((fruit: string | null) => fruit ? this._filter(fruit) : this.allFruits.slice()));
   }
 
   ngOnInit(): void {

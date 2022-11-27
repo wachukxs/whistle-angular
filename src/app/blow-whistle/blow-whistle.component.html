@@ -1,46 +1,65 @@
 <div class="wrapper">
-    <mat-toolbar>
-        <span>Second Line</span>
-        <span class="example-spacer"></span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-            <mat-icon>favorite</mat-icon>
-        </button>
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>share</mat-icon>
-        </button>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <span routerLink="/">Whistle</span>
+            <span class="toolbar-spacer"></span>
+            <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+                <mat-icon>favorite</mat-icon>
+            </button>
+            <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+                <mat-icon>share</mat-icon>
+            </button>
+        </mat-toolbar-row>
     </mat-toolbar>
+
 
     <section>
         <form class="example-form">
-            <mat-form-field class="example-full-width">
-                <mat-label>Favorite food</mat-label>
-                <input matInput placeholder="Ex. Pizza" value="Sushi">
+            <mat-form-field class="" appearance="fill">
+                <mat-label>Story title</mat-label>
+                <input matInput placeholder="How XXX Institution is doing YYY">
+                <mat-hint>Give your story an appropriate name.</mat-hint>
             </mat-form-field>
 
+            <!--
+                TODO:
+                No space between tag words
+            -->
             <mat-form-field class="example-chip-list" appearance="fill">
-                <mat-label>Favorite Fruits</mat-label>
-                <mat-chip-grid #chipGrid aria-label="Fruit selection">
-                    <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
+                <mat-label>Story tags</mat-label>
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                    <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable" [removable]="removable"
+                        (removed)="remove(fruit)">
                         {{fruit}}
-                        <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+                        <button matChipRemove *ngIf="removable">
                             <mat-icon>cancel</mat-icon>
                         </button>
-                    </mat-chip-row>
-                </mat-chip-grid>
-                <input placeholder="New Fruit..." #fruitInput [formControl]="fruitCtrl" [matChipInputFor]="chipGrid"
-                    [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="add($event)" />
+                    </mat-chip>
+                    <input placeholder="Add Tag" #fruitInput [formControl]="fruitCtrl" [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        (matChipInputTokenEnd)="add($event)" />
+                </mat-chip-list>
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                     <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
                         {{fruit}}
                     </mat-option>
                 </mat-autocomplete>
+
+                <mat-hint>Relevant tags like institution abbrevation, etc.</mat-hint>
             </mat-form-field>
 
-            <mat-form-field class="example-full-width">
-                <mat-label>Leave a comment</mat-label>
-                <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+            <mat-form-field class="" appearance="fill">
+                <mat-label>Your story</mat-label>
+                <textarea matInput placeholder="Type a book. We won't stop you." [matAutosizeMaxRows]="25" [rows]="15" [matTextareaAutosize]="true"></textarea>
+                <mat-hint>Don't incldue any <b>P</b>ersonally <b>I</b>dentifiable <b>I</b>nformation</mat-hint>
             </mat-form-field>
         </form>
+
+        <!--
+            TODO:
+            1. We should have an excellent draft save feature.
+
+            2. In Roadmap, to ensure entire anonymity, use AI to remove PII
+        -->
     </section>
 </div>
