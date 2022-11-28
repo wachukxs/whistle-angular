@@ -32,6 +32,15 @@ export class BlowWhistleComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  saveDraft(): void {
+    console.log('saving draft...');
+    
+  }
+
+  publish(): void {
+    console.log('publishing...');
+  }
+
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 

@@ -1,7 +1,7 @@
 <div class="wrapper">
     <mat-toolbar color="primary">
         <mat-toolbar-row>
-            <span routerLink="/">Whistle</span>
+            <button class="main-link" mat-button routerLink="/">Whistle</button>
             <span class="toolbar-spacer"></span>
             <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
                 <mat-icon>favorite</mat-icon>
@@ -53,6 +53,11 @@
                 <textarea matInput placeholder="Type a book. We won't stop you." [matAutosizeMaxRows]="25" [rows]="15" [matTextareaAutosize]="true"></textarea>
                 <mat-hint>Don't incldue any <b>P</b>ersonally <b>I</b>dentifiable <b>I</b>nformation</mat-hint>
             </mat-form-field>
+
+            <div class="buttons-group">
+                <button mat-stroked-button (click)="saveDraft()">Save draft</button>
+                <button mat-raised-button color="primary" (click)="publish()">Publish</button>
+            </div>
         </form>
 
         <!--
@@ -60,6 +65,7 @@
             1. We should have an excellent draft save feature.
 
             2. In Roadmap, to ensure entire anonymity, use AI to remove PII
+            3. Show notification that we automatically saved draft
         -->
     </section>
 </div>

@@ -10,6 +10,16 @@ form {
     margin: 0 auto;
     gap: 15px;
 }
+
+.main-link {
+    font-size: larger;
+}
+
+.buttons-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
   
 /*
     Source: https://www.w3schools.com/css/css_rwd_mediaqueries.asp
