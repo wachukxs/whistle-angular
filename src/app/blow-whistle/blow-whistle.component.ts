@@ -2,9 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { map, startWith, tap, filter } from 'rxjs/operators';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { CountryInfo, UtilService } from '../services/util.service';
 
 @Component({
   selector: 'app-blow-whistle',
@@ -16,20 +17,54 @@ export class BlowWhistleComponent implements OnInit {
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  fruitCtrl = new FormControl();
-  filteredFruits: Observable<string[]>;
-  fruits: string[] = ['Lemon'];
-  allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  tagsCtrl = new FormControl();
+  countryCtrl = new FormControl();
+  filteredTags: Observable<string[]>;
+  tags: string[] = ['gov'];
+  allTags: string[] = ['Breaking', 'Government', 'Private',]; // etc.
+  countryFilteredOptions: Observable<CountryInfo[]> | undefined
 
-  @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
   
-  constructor() {
-    this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
+  constructor(private utilService: UtilService) {
+    this.filteredTags = this.tagsCtrl.valueChanges.pipe(
       startWith(null),
-      map((fruit: string | null) => fruit ? this._filter(fruit) : this.allFruits.slice()));
+      map((fruit: string | null) => fruit ? this._filterFruits(fruit) : this.allTags.slice()));
+
+      this.countryFilteredOptions = this.countryCtrl?.valueChanges.pipe(
+        filter(v => v != null),
+        // tap(value => console.log('--', value)),
+        startWith(''),
+        map(value => (typeof value === 'string' ? value : `${value.name}`)),
+        map(name => (name ? this._filterCountries(name) : this.utilService.countries.slice())), // not sure what the .slice() is doing
+      );
   }
 
   ngOnInit(): void {
+
+  }
+
+  countryDisplayFn(location: CountryInfo): string {
+    return location && location.name ? location.name : '';
+  }
+
+  clearCountryAutocomplete(event: Event, trigger: MatAutocompleteTrigger): void {
+    event.preventDefault();
+    this.countryCtrl?.setValue('');
+    trigger.openPanel()
+  }
+
+  countryOptSel(evt: MatAutocompleteSelectedEvent) {
+    console.log('??', evt.option.value);    
+  }
+
+
+
+  _filterCountries(name: string): CountryInfo[] {
+    const filterValue = name.toLowerCase();
+
+    // we should include .iso etc.
+    return this.utilService.countries.filter(option => `${option.name} ${option?.iso_code_2} ${option?.aka_name}`.toLowerCase().includes(filterValue));
   }
 
   saveDraft(): void {
@@ -37,42 +72,42 @@ export class BlowWhistleComponent implements OnInit {
     
   }
 
-  publish(): void {
+  publishStory(): void {
     console.log('publishing...');
   }
 
-  add(event: MatChipInputEvent): void {
+  addTag(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
+    // Add a tag
     if (value) {
-      this.fruits.push(value);
+      this.tags.push(value);
     }
 
     // Clear the input value
     event.chipInput!.clear();
 
-    this.fruitCtrl.setValue(null);
+    this.tagsCtrl.setValue(null);
   }
 
-  remove(fruit: string): void {
-    const index = this.fruits.indexOf(fruit);
+  removeTag(fruit: string): void {
+    const index = this.tags.indexOf(fruit);
 
     if (index >= 0) {
-      this.fruits.splice(index, 1);
+      this.tags.splice(index, 1);
     }
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
+  tagsSelected(event: MatAutocompleteSelectedEvent): void {
+    this.tags.push(event.option.viewValue);
+    this.tagInput.nativeElement.value = '';
+    this.tagsCtrl.setValue(null);
   }
 
-  private _filter(value: string): string[] {
+  _filterFruits(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allFruits.filter(fruit => fruit.toLowerCase().includes(filterValue));
+    return this.allTags.filter(fruit => fruit.toLowerCase().includes(filterValue));
   }
 
 }

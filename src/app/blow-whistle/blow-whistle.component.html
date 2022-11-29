@@ -22,25 +22,54 @@
             </mat-form-field>
 
             <!--
+                Should we allow selecting multiple countries?
+            -->
+
+            <mat-form-field appearance="fill">
+                <mat-label>Country location</mat-label>
+                <input type="text" #trigger="matAutocompleteTrigger" #farmerAutoComplete matInput [formControl]="countryCtrl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="countryDisplayFn" (optionSelected)="countryOptSel($event)">
+                    <mat-option *ngFor="let option of countryFilteredOptions | async" [value]="option.name">
+                        {{ option.name }}
+                    </mat-option>
+                </mat-autocomplete>
+        
+                <button class="" *ngIf="countryCtrl?.value" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="clearCountryAutocomplete($event, trigger)">
+                    <mat-icon>close</mat-icon>
+                </button>
+        
+                <mat-hint>
+                    <i>Optional</i>
+                </mat-hint>
+        
+        
+                <mat-error *ngIf="countryCtrl?.hasError('required')">
+                    <strong>Location</strong> is required.
+                </mat-error>
+        
+            </mat-form-field>
+
+            <!--
                 TODO:
                 No space between tag words
             -->
             <mat-form-field class="example-chip-list" appearance="fill">
                 <mat-label>Story tags</mat-label>
                 <mat-chip-list #chipList aria-label="Fruit selection">
-                    <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable" [removable]="removable"
-                        (removed)="remove(fruit)">
+                    <mat-chip *ngFor="let fruit of tags" [selectable]="selectable" [removable]="removable"
+                        (removed)="removeTag(fruit)">
                         {{fruit}}
                         <button matChipRemove *ngIf="removable">
                             <mat-icon>cancel</mat-icon>
                         </button>
                     </mat-chip>
-                    <input placeholder="Add Tag" #fruitInput [formControl]="fruitCtrl" [matAutocomplete]="auto"
+                    <input placeholder="Add Tag" #tagInput [formControl]="tagsCtrl" [matAutocomplete]="auto"
                         [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        (matChipInputTokenEnd)="add($event)" />
+                        (matChipInputTokenEnd)="addTag($event)" />
                 </mat-chip-list>
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                    <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="tagsSelected($event)">
+                    <mat-option *ngFor="let fruit of filteredTags | async" [value]="fruit">
                         {{fruit}}
                     </mat-option>
                 </mat-autocomplete>
@@ -56,7 +85,7 @@
 
             <div class="buttons-group">
                 <button mat-stroked-button (click)="saveDraft()">Save draft</button>
-                <button mat-raised-button color="primary" (click)="publish()">Publish</button>
+                <button mat-raised-button color="primary" (click)="publishStory()">Publish</button>
             </div>
         </form>
 
