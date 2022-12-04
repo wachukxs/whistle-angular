@@ -76,6 +76,11 @@ export class BlowWhistleComponent implements OnInit {
     console.log('publishing...');
   }
 
+  confirmEthAddress(): void {
+    this.utilService.getEthAddressFromMetaMaskBrowserPlugin()
+    // this.utilService.useEtherScan()
+  }
+
   addTag(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 

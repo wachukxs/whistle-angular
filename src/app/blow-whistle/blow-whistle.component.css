@@ -3,12 +3,22 @@
 }
 
 form {
-    padding-top: 15px;
+    padding: 15px 0 15px 0;
     display: flex;
     flex-direction: column;
     width: 80%;
     margin: 0 auto;
     gap: 15px;
+}
+
+.address-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.address-group mat-form-field {
+    flex-grow: 1;
 }
 
 .main-link {

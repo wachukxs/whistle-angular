@@ -83,6 +83,15 @@
                 <mat-hint>Don't incldue any <b>P</b>ersonally <b>I</b>dentifiable <b>I</b>nformation</mat-hint>
             </mat-form-field>
 
+            <div class="address-group">
+                <mat-form-field appearance="fill">
+                    <mat-label>ETH Address</mat-label>
+                    <input matInput placeholder="ETH Address">
+                </mat-form-field>
+
+                <button mat-stroked-button color="primary" (click)="confirmEthAddress()">Confirm</button>
+            </div>
+
             <div class="buttons-group">
                 <button mat-stroked-button (click)="saveDraft()">Save draft</button>
                 <button mat-raised-button color="primary" (click)="publishStory()">Publish</button>
@@ -92,7 +101,6 @@
         <!--
             TODO:
             1. We should have an excellent draft save feature.
-
             2. In Roadmap, to ensure entire anonymity, use AI to remove PII
             3. Show notification that we automatically saved draft
         -->

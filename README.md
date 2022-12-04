@@ -1,5 +1,10 @@
 # Whistle
 
+> This is the frontend of the whistle project. You can find [backend here](https://github.com/wachukxs/whistle-nodejs)
+## Description
+
+This allows people break stories anonymously.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.3.
 
 ## Development server
