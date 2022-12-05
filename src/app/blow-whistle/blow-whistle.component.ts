@@ -6,6 +6,7 @@ import { map, startWith, tap, filter } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { CountryInfo, UtilService } from '../services/util.service';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-blow-whistle',
@@ -17,10 +18,13 @@ export class BlowWhistleComponent implements OnInit {
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagsCtrl = new FormControl();
-  countryCtrl = new FormControl();
-  filteredTags: Observable<string[]>;
   tags: string[] = ['gov'];
+  tagsCtrl = new FormControl(this.tags.toString());
+  countryCtrl = new FormControl();
+  storyCtrl = new FormControl();
+  titleCtrl = new FormControl();
+  publisherEthCtrl = new FormControl();
+  filteredTags: Observable<string[]> | undefined;
   allTags: string[] = ['Breaking', 'Government', 'Private',]; // etc.
   countryFilteredOptions: Observable<CountryInfo[]> | undefined
 
@@ -29,23 +33,25 @@ export class BlowWhistleComponent implements OnInit {
   constructor(private utilService: UtilService) {
     this.filteredTags = this.tagsCtrl.valueChanges.pipe(
       startWith(null),
-      map((fruit: string | null) => fruit ? this._filterFruits(fruit) : this.allTags.slice()));
+      map((tag: string | null) => tag ? this._filterTags(tag) : this.allTags.slice())
+    );
 
-      this.countryFilteredOptions = this.countryCtrl?.valueChanges.pipe(
-        filter(v => v != null),
-        // tap(value => console.log('--', value)),
-        startWith(''),
-        map(value => (typeof value === 'string' ? value : `${value.name}`)),
-        map(name => (name ? this._filterCountries(name) : this.utilService.countries.slice())), // not sure what the .slice() is doing
-      );
+    this.countryFilteredOptions = this.countryCtrl?.valueChanges.pipe(
+      filter(v => v != null),
+      // tap(value => console.log('--', value)),
+      startWith(''),
+      map(value => (typeof value === 'string' ? value : `${value.name}`)),
+      map(name => (name ? this._filterCountries(name) : this.utilService.countries.slice())), // not sure what the .slice() is doing
+    );
   }
 
   ngOnInit(): void {
-
+    console.log('process', process.env);
+    console.log('environment', environment);
   }
 
-  countryDisplayFn(location: CountryInfo): string {
-    return location && location.name ? location.name : '';
+  countryDisplayFn(location: string): string {
+    return location;
   }
 
   clearCountryAutocomplete(event: Event, trigger: MatAutocompleteTrigger): void {
@@ -55,10 +61,8 @@ export class BlowWhistleComponent implements OnInit {
   }
 
   countryOptSel(evt: MatAutocompleteSelectedEvent) {
-    console.log('??', evt.option.value);    
+    console.log('??', evt.option.value);
   }
-
-
 
   _filterCountries(name: string): CountryInfo[] {
     const filterValue = name.toLowerCase();
@@ -74,6 +78,21 @@ export class BlowWhistleComponent implements OnInit {
 
   publishStory(): void {
     console.log('publishing...');
+    
+    this.utilService.createNewStory({
+      story: this.storyCtrl.value,
+      title: this.titleCtrl.value,
+      tags: this.tagsCtrl.value,
+      location: this.countryCtrl.value,
+      publishingEthAddress: this.publisherEthCtrl.value
+    }).subscribe((res) => {
+      console.log('res', res);
+      
+    }, (err) => {
+      console.log('err', err);
+      this.utilService.showNotification(err.error?.error?.reason)
+      
+    })
   }
 
   confirmEthAddress(): void {
@@ -106,13 +125,13 @@ export class BlowWhistleComponent implements OnInit {
   tagsSelected(event: MatAutocompleteSelectedEvent): void {
     this.tags.push(event.option.viewValue);
     this.tagInput.nativeElement.value = '';
-    this.tagsCtrl.setValue(null);
+    this.tagsCtrl.setValue(this.tags.toString());
   }
 
-  _filterFruits(value: string): string[] {
+  _filterTags(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allTags.filter(fruit => fruit.toLowerCase().includes(filterValue));
+    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
 }

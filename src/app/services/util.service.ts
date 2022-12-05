@@ -1,9 +1,12 @@
-import {Injectable} from '@angular/core';
-import {SwPush} from '@angular/service-worker';
-import {Observable} from 'rxjs';
-import {ethers} from "ethers";
-import {ExternalProvider, JsonRpcFetchFunc} from "@ethersproject/providers";
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { Injectable } from '@angular/core';
+import { SwPush } from '@angular/service-worker';
+import { Observable, throwError } from 'rxjs';
+import { ethers } from "ethers";
+import { ExternalProvider, JsonRpcFetchFunc } from "@ethersproject/providers";
+import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { environment } from "src/environments/environment";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { catchError, timeout } from 'rxjs/operators';
 
 declare global {
     interface Window {
@@ -11,7 +14,9 @@ declare global {
     }
 }
 
-
+export enum URLPaths {
+    createNewStory = '/story'
+}
 export interface CountryInfo {
     name: string,
     iso_code_2: string,
@@ -251,10 +256,39 @@ export class UtilService {
         }
     ]
 
-    etherScanAPI = 'GYZP14SNCHK4TCH9GKZVQV9EYWBHFND4D3' 
+    private httpOptions = { // add timeout kini
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          // timeout: `${3000}`, // transactions take time!
+          // Authorization: 'my-auth-token'
+        }),
+        observe: 'response' as const,
+        responseType: 'json' as const,
+      };
+
+      private handleError(error: HttpErrorResponse) {
+        console.error('got this error', error);
+        
+        if (error.error instanceof ErrorEvent) {
+          // A client-side or network error occurred. Handle it accordingly.
+          console.error('An error occurred:', error.error.message);
+        } else {
+          // The backend returned an unsuccessful response code.
+          // The response body may contain clues as to what went wrong.
+          console.error(error);
+          
+          console.error(
+            `Backend returned code ${error.status}, ` +
+            `body was: ${error.error}`);
+        }
+        // Return an observable with a user-facing error message.
+    
+        return throwError(error);
+      }
+
     mainNetwork = 'homestead' 
     
-    constructor(private snackBar: MatSnackBar) {}
+    constructor(private snackBar: MatSnackBar, private http: HttpClient) {}
 
     async getEthAddressFromMetaMaskBrowserPlugin() {
 
@@ -283,8 +317,45 @@ export class UtilService {
 
 
     useEtherScan() { // Create an Ethereum provider using ethers
-        const provider = ethers.getDefaultProvider(this.mainNetwork, {etherscan: this.etherScanAPI});
+        const provider = ethers.getDefaultProvider(this.mainNetwork, {etherscan: environment.ETHER_SCAN_API});
     }
+
+    createNewStory(data: any) {
+        console.log('createNewStory up via', environment.baseURL + URLPaths.createNewStory);
+    
+        return this.http.post(environment.baseURL + URLPaths.createNewStory, data, this.httpOptions)
+        .pipe(
+          // timeout(15000), transactions take a while
+          // retry(3), // retry a failed request up to 3 times
+          catchError(this.handleError) // then handle the error
+        );
+    }
+
+    getStories() {
+        console.log('getStories up via', environment.baseURL + URLPaths.createNewStory);
+    
+        return this.http.get(environment.baseURL + URLPaths.createNewStory, this.httpOptions)
+        .pipe(
+          // timeout(15000), transactions take a while
+          // retry(3), // retry a failed request up to 3 times
+          catchError(this.handleError) // then handle the error
+        );
+    }
+
+
+      /**
+   * maybe add color parameter for error notification
+   * @param message message to show
+   * @param action action text (to close the notification)
+   * @param verticalPosition type MatSnackBarVerticalPosition default 'bottom'
+   * @param duration type number, default 5000
+   */
+   showNotification(message: string, action: string = 'OK', verticalPosition: MatSnackBarVerticalPosition = 'bottom', duration = 5000) {
+    this.snackBar.open(message, action, {
+      duration: duration, // | undefined
+      verticalPosition: verticalPosition
+    })
+  }
 
 
 }

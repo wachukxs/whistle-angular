@@ -1,0 +1,19 @@
+section[stories] {
+    padding: 15px;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+mat-chip {
+    min-height: 25px;
+    border-radius: 7px;
+    margin: 2px;
+}
+
+mat-divider#d {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: inherit;
+}

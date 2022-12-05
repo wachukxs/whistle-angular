@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  baseURL: 'http://localhost:3051/api/v1.0',
+  ETHER_SCAN_API: process.env.ETHER_SCAN_API,
+  production: false,
+  HW_CONTRACT_ADDRESS: process.env["NG_APP_HW_CONTRACT_ADDRESS"],
+  MY_METAMASK_PRIVATE_KEY: process.env['NG_APP_MY_METAMASK_PRIVATE_KEY'],
+  MY_ALCHEMY_API_KEY: process.env.NG_APP_MY_ALCHEMY_API_KEY,
+  ALCHEMY_API_BASE_URL: process.env.NG_APP_ALCHEMY_API_BASE_URL,
+  ENV: process.env['NG_APP_ENV'],
+  ALCHEMY_API_BASE_URL_WS: process.env.NG_APP_ALCHEMY_API_BASE_URL_WS
 };
 
 /*

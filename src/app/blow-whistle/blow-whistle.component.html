@@ -9,6 +9,7 @@
             <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
                 <mat-icon>share</mat-icon>
             </button>
+            <button mat-button routerLink="/stories">Stories</button>
         </mat-toolbar-row>
     </mat-toolbar>
 
@@ -17,7 +18,7 @@
         <form class="example-form">
             <mat-form-field class="" appearance="fill">
                 <mat-label>Story title</mat-label>
-                <input matInput placeholder="How XXX Institution is doing YYY">
+                <input [formControl]="titleCtrl" matInput placeholder="How XXX Institution is doing YYY">
                 <mat-hint>Give your story an appropriate name.</mat-hint>
             </mat-form-field>
 
@@ -27,8 +28,8 @@
 
             <mat-form-field appearance="fill">
                 <mat-label>Country location</mat-label>
-                <input type="text" #trigger="matAutocompleteTrigger" #farmerAutoComplete matInput [formControl]="countryCtrl" [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="countryDisplayFn" (optionSelected)="countryOptSel($event)">
+                <input type="text" #trigger="matAutocompleteTrigger" #farmerAutoComplete matInput [formControl]="countryCtrl" [matAutocomplete]="autoLocation">
+                <mat-autocomplete #autoLocation="matAutocomplete" [displayWith]="countryDisplayFn" (optionSelected)="countryOptSel($event)">
                     <mat-option *ngFor="let option of countryFilteredOptions | async" [value]="option.name">
                         {{ option.name }}
                     </mat-option>
@@ -56,21 +57,21 @@
             -->
             <mat-form-field class="example-chip-list" appearance="fill">
                 <mat-label>Story tags</mat-label>
-                <mat-chip-list #chipList aria-label="Fruit selection">
-                    <mat-chip *ngFor="let fruit of tags" [selectable]="selectable" [removable]="removable"
-                        (removed)="removeTag(fruit)">
-                        {{fruit}}
+                <mat-chip-list #chipList aria-label="Tag selection">
+                    <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable"
+                        (removed)="removeTag(tag)">
+                        {{tag}}
                         <button matChipRemove *ngIf="removable">
                             <mat-icon>cancel</mat-icon>
                         </button>
                     </mat-chip>
-                    <input placeholder="Add Tag" #tagInput [formControl]="tagsCtrl" [matAutocomplete]="auto"
+                    <input placeholder="Add Tag" #tagInput [formControl]="tagsCtrl" [matAutocomplete]="autoTag"
                         [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                         (matChipInputTokenEnd)="addTag($event)" />
                 </mat-chip-list>
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="tagsSelected($event)">
-                    <mat-option *ngFor="let fruit of filteredTags | async" [value]="fruit">
-                        {{fruit}}
+                <mat-autocomplete #autoTag="matAutocomplete" (optionSelected)="tagsSelected($event)">
+                    <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                        {{tag}}
                     </mat-option>
                 </mat-autocomplete>
 
@@ -79,14 +80,14 @@
 
             <mat-form-field class="" appearance="fill">
                 <mat-label>Your story</mat-label>
-                <textarea matInput placeholder="Type a book. We won't stop you." [matAutosizeMaxRows]="25" [rows]="15" [matTextareaAutosize]="true"></textarea>
+                <textarea [formControl]="storyCtrl" matInput placeholder="Type a book. We won't stop you." [matAutosizeMaxRows]="25" [rows]="15" [matTextareaAutosize]="true"></textarea>
                 <mat-hint>Don't incldue any <b>P</b>ersonally <b>I</b>dentifiable <b>I</b>nformation</mat-hint>
             </mat-form-field>
 
             <div class="address-group">
                 <mat-form-field appearance="fill">
                     <mat-label>ETH Address</mat-label>
-                    <input matInput placeholder="ETH Address">
+                    <input [formControl]="publisherEthCtrl" matInput placeholder="ETH Address">
                 </mat-form-field>
 
                 <button mat-stroked-button color="primary" (click)="confirmEthAddress()">Confirm</button>
