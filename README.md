@@ -2,10 +2,15 @@
 
 > This is the frontend of the whistle project. You can find [backend here](https://github.com/wachukxs/whistle-nodejs)
 
-> Transactions I've ran: https://mumbai.polygonscan.com/address/0xca354D0d125baD63Dbf1671064a4D22b522F1fDD
 ## Description
 
-This allows people break stories anonymously.
+This project allows people break stories anonymously.
+
+The stories are in the transaction data of every block in the smart contract. No data in saved in the user browser or in a regular database.
+
+> Transactions I've ran: https://mumbai.polygonscan.com/address/0xca354D0d125baD63Dbf1671064a4D22b522F1fDD
+
+This is an MVP, later improvement include address confirmation, and viewing/filtering breaking stories <!-- easy of payment via the app -->, and other security features.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.3.
 
