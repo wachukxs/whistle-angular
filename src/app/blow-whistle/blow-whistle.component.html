@@ -88,6 +88,9 @@
                 <mat-form-field appearance="fill">
                     <mat-label>ETH Address</mat-label>
                     <input [formControl]="publisherEthCtrl" matInput placeholder="ETH Address">
+                    <mat-error *ngIf="publisherEthCtrl?.hasError('pattern')">
+                        This doesn't <strong>look like</strong> an eth address.
+                    </mat-error>
                 </mat-form-field>
 
                 <button mat-stroked-button color="primary" (click)="confirmEthAddress()">Confirm</button>

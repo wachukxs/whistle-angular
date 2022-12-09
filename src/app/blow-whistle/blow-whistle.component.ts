@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith, tap, filter } from 'rxjs/operators';
@@ -23,7 +23,7 @@ export class BlowWhistleComponent implements OnInit {
   countryCtrl = new FormControl();
   storyCtrl = new FormControl();
   titleCtrl = new FormControl();
-  publisherEthCtrl = new FormControl();
+  publisherEthCtrl = new FormControl('', [Validators.pattern(/^0x[a-fA-F0-9]{40}$/)]); // for other addresses https://gist.github.com/MBrassey/623f7b8d02766fa2d826bf9eca3fe005
   filteredTags: Observable<string[]> | undefined;
   allTags: string[] = ['Breaking', 'Government', 'Private',]; // etc.
   countryFilteredOptions: Observable<CountryInfo[]> | undefined
